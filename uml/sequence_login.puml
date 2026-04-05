@@ -1,0 +1,26 @@
+@startuml
+title Sequence — Login
+
+actor Client
+boundary "index.html" as UI
+control AuthServlet
+entity AuthService
+database MySQL
+
+Client -> UI : enter username + password\nclick Sign In
+UI -> AuthServlet : POST /api/auth/login\n{"username":"...","password":"..."}
+AuthServlet -> AuthService : login(username, password)
+AuthService -> MySQL : SELECT * FROM users\nWHERE username = ?
+MySQL --> AuthService : User row (with password_hash)
+AuthService -> AuthService : BCrypt.checkpw(plain, hash)
+alt valid credentials
+  AuthService --> AuthServlet : User (hash cleared)
+  AuthServlet -> AuthServlet : req.getSession().setAttribute("user", user)
+  AuthServlet --> UI : 200 OK\n{"id":1,"username":"...","role":"CLIENT"}
+  UI -> UI : store user in JS\nredirectByRole(role)
+else invalid credentials
+  AuthService --> AuthServlet : throw IllegalArgumentException
+  AuthServlet --> UI : 401 Unauthorized\n{"error":"Invalid credentials"}
+  UI -> Client : red error toast
+end
+@enduml

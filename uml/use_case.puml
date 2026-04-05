@@ -1,0 +1,53 @@
+@startuml use_case
+left to right direction
+skinparam backgroundColor #0a0a0f
+skinparam actorBackgroundColor #1a1a26
+skinparam actorBorderColor #00ff87
+skinparam usecaseBackgroundColor #12121a
+skinparam usecaseBorderColor #444466
+skinparam arrowColor #00ff87
+skinparam fontColor #e8e8f0
+
+actor Client
+actor Worker
+actor Admin
+
+rectangle StadiumEats {
+  usecase "Register / Login" as UC_AUTH
+  usecase "Browse Menu" as UC_MENU
+  usecase "Add to Cart" as UC_CART
+  usecase "Place Order" as UC_ORDER
+  usecase "Choose Payment (Online/Cash)" as UC_PAY
+  usecase "Track My Orders" as UC_TRACK
+
+  usecase "View Pending Orders" as UC_W_VIEW
+  usecase "Accept Order (IN_DELIVERY)" as UC_W_ACCEPT
+  usecase "Mark Delivered" as UC_W_DELIVER
+
+  usecase "Manage Menu Items" as UC_A_MENU
+  usecase "View All Orders" as UC_A_ORDERS
+  usecase "View All Users" as UC_A_USERS
+  usecase "Update Any Order Status" as UC_A_STATUS
+}
+
+Client --> UC_AUTH
+Client --> UC_MENU
+Client --> UC_CART
+Client --> UC_ORDER
+Client --> UC_PAY
+Client --> UC_TRACK
+
+Worker --> UC_AUTH
+Worker --> UC_W_VIEW
+Worker --> UC_W_ACCEPT
+Worker --> UC_W_DELIVER
+
+Admin --> UC_AUTH
+Admin --> UC_A_MENU
+Admin --> UC_A_ORDERS
+Admin --> UC_A_USERS
+Admin --> UC_A_STATUS
+
+UC_ORDER ..> UC_PAY : <<include>>
+UC_ORDER ..> UC_CART : <<include>>
+@enduml

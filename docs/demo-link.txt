@@ -1,0 +1,15 @@
+StadiumEats — Live Demo
+=======================
+
+Application URL (local):
+  http://localhost:8080/stadiumeats/
+
+Test Credentials:
+  Admin   → username: admin2    | password: Admin2025!
+  Worker  → username: worker2   | password: Admin2025!
+  Client  → register a new account via the UI
+
+Deployment:
+  mvn clean package
+  Copy target/stadiumeats.war to Tomcat 9 webapps/
+  Start Tomcat and open the URL above.

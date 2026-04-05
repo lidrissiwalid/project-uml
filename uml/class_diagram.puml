@@ -1,0 +1,222 @@
+@startuml class_diagram
+skinparam backgroundColor #0a0a0f
+skinparam classBackgroundColor #12121a
+skinparam classBorderColor #444466
+skinparam arrowColor #00ff87
+skinparam fontColor #e8e8f0
+skinparam stereotypeCBackgroundColor #1a1a26
+
+' ── Models ──
+class User {
+  - id: Long
+  - username: String
+  - email: String
+  - passwordHash: String <<transient>>
+  - role: String
+  - createdAt: String
+  + getters/setters
+}
+
+class MenuItem {
+  - id: Long
+  - name: String
+  - description: String
+  - price: BigDecimal
+  - category: String
+  - imageUrl: String
+  - available: boolean
+  + getters/setters
+}
+
+class Order {
+  - id: Long
+  - clientId: Long
+  - clientUsername: String
+  - seatNumber: String
+  - status: String
+  - totalPrice: BigDecimal
+  - paymentMethod: String
+  - createdAt: String
+  - items: List<OrderItem>
+  + getters/setters
+}
+
+class OrderItem {
+  - id: Long
+  - orderId: Long
+  - menuItemId: Long
+  - menuItemName: String
+  - quantity: int
+  - unitPrice: BigDecimal
+  + getters/setters
+}
+
+Order "1" *-- "0..*" OrderItem
+
+' ── DAO Interfaces ──
+interface GenericDAO<T> {
+  + findById(id: Long): Optional<T>
+  + findAll(): List<T>
+  + save(entity: T): T
+  + update(entity: T): void
+  + deleteById(id: Long): void
+}
+
+interface UserDAO {
+  + findByUsername(username: String): Optional<User>
+  + findByEmail(email: String): Optional<User>
+}
+
+interface MenuItemDAO {
+  + findAllAvailable(): List<MenuItem>
+  + findByCategory(category: String): List<MenuItem>
+}
+
+interface OrderDAO {
+  + findByClientId(clientId: Long): List<Order>
+  + findByStatus(status: String): List<Order>
+  + updateStatus(orderId: Long, status: String): void
+  + saveWithItems(order: Order, items: List<OrderItem>): Order
+}
+
+GenericDAO <|-- UserDAO
+GenericDAO <|-- MenuItemDAO
+GenericDAO <|-- OrderDAO
+
+' ── DAO Impls ──
+class UserDAOImpl {
+  - mapRow(rs: ResultSet): User
+  + findById(id): Optional<User>
+  + findAll(): List<User>
+  + save(user): User
+  + update(user): void
+  + deleteById(id): void
+  + findByUsername(username): Optional<User>
+  + findByEmail(email): Optional<User>
+}
+
+class MenuItemDAOImpl {
+  - mapRow(rs: ResultSet): MenuItem
+  + findAllAvailable(): List<MenuItem>
+  + findByCategory(cat): List<MenuItem>
+}
+
+class OrderDAOImpl {
+  - mapRow(rs: ResultSet): Order
+  - loadItems(orderId): List<OrderItem>
+  + saveWithItems(order, items): Order
+  + updateStatus(orderId, status): void
+}
+
+UserDAO <|.. UserDAOImpl
+MenuItemDAO <|.. MenuItemDAOImpl
+OrderDAO <|.. OrderDAOImpl
+
+' ── Singleton ──
+class ConnectionFactory <<Singleton>> {
+  - instance: ConnectionFactory <<volatile>>
+  - url: String
+  - username: String
+  - password: String
+  - ConnectionFactory()
+  + getInstance(): ConnectionFactory
+  + getConnection(): Connection
+}
+
+UserDAOImpl ..> ConnectionFactory : uses
+MenuItemDAOImpl ..> ConnectionFactory : uses
+OrderDAOImpl ..> ConnectionFactory : uses
+
+' ── Services (Facade) ──
+class AuthService <<Facade>> {
+  - userDAO: UserDAO
+  + AuthService(userDAO: UserDAO)
+  + register(username, email, pass): User
+  + login(username, pass): User
+  + listAll(): List<User>
+}
+
+class OrderService <<Facade>> {
+  - orderDAO: OrderDAO
+  - menuItemDAO: MenuItemDAO
+  + OrderService(orderDAO, menuItemDAO)
+  + placeOrder(clientId, seat, items, payment): Order
+  + getClientOrders(clientId): List<Order>
+  + getAllOrders(): List<Order>
+  + getActiveOrders(): List<Order>
+  + updateStatus(orderId, status): void
+  - resolveStrategy(label): PaymentStrategy
+}
+
+AuthService --> UserDAO
+OrderService --> OrderDAO
+OrderService --> MenuItemDAO
+
+' ── Strategy Pattern ──
+interface PaymentStrategy {
+  + processPayment(amount: BigDecimal): String
+  + getMethodName(): String
+}
+class OnlinePaymentStrategy implements PaymentStrategy
+class CashPaymentStrategy implements PaymentStrategy
+
+OrderService ..> PaymentStrategy : uses
+
+' ── Servlets ──
+abstract class BaseApiServlet <<Template Method>> {
+  # GSON: Gson
+  # readBody(req): String
+  # parseBody(req, clazz): T
+  # writeJson(resp, status, data): void
+  # ok(resp, data): void
+  # created(resp, data): void
+  # error(resp, status, msg): void
+  # badRequest(resp, msg): void
+  # unauthorized(resp, msg): void
+  # forbidden(resp, msg): void
+  # notFound(resp, msg): void
+  # serverError(resp, msg): void
+  # getSessionUserId(req): Long
+  # getSessionRole(req): String
+  # requireLogin(req, resp): boolean
+  # requireRole(req, resp, roles): boolean
+}
+
+class AuthServlet {
+  - authService: AuthService
+  + doGet(req, resp): void
+  + doPost(req, resp): void
+  - handleLogin(req, resp): void
+  - handleRegister(req, resp): void
+  - handleLogout(req, resp): void
+}
+
+class MenuServlet {
+  - menuItemDAO: MenuItemDAO
+  + doGet(req, resp): void
+  + doPost(req, resp): void
+  + doPut(req, resp): void
+  + doDelete(req, resp): void
+}
+
+class OrderServlet {
+  - orderService: OrderService
+  + doGet(req, resp): void
+  + doPost(req, resp): void
+  + doPut(req, resp): void
+}
+
+BaseApiServlet <|-- AuthServlet
+BaseApiServlet <|-- MenuServlet
+BaseApiServlet <|-- OrderServlet
+
+AuthServlet --> AuthService
+MenuServlet --> MenuItemDAO
+OrderServlet --> OrderService
+
+' ── Filter ──
+class CorsFilter {
+  + doFilter(req, resp, chain): void
+}
+
+@enduml

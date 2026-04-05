@@ -1,0 +1,24 @@
+# ── Maven build output ──
+target/
+*.class
+*.jar
+*.war
+
+# ── IDE files ──
+.idea/
+.vscode/
+*.iml
+.classpath
+.project
+.settings/
+
+# ── OS files ──
+.DS_Store
+Thumbs.db
+
+# ── Sensitive config ──
+src/main/resources/db.properties
+
+# ── Logs ──
+*.log
+logs/

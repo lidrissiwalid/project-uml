@@ -1,0 +1,61 @@
+@startuml activity_diagram
+skinparam backgroundColor #0a0a0f
+skinparam activityBackgroundColor #12121a
+skinparam activityBorderColor #444466
+skinparam activityArrowColor #00ff87
+skinparam fontColor #e8e8f0
+skinparam swimlaneBorderColor #444466
+
+title Order Lifecycle — Activity Diagram with Swim Lanes
+
+|Client|
+start
+:Browse menu;
+:Add items to cart;
+:Enter seat number;
+:Choose payment method;
+:Click "Place Order";
+
+|System|
+:Validate cart & seat;
+if (items available?) then (yes)
+  :Calculate total price;
+  :Process payment (Strategy);
+  :Save order to DB (status=PENDING);
+  :Return order confirmation;
+else (no)
+  :Return error "Item not available";
+  |Client|
+  :See error toast;
+  stop
+endif
+
+|Client|
+:See "Order #N placed!" confirmation;
+:View order in My Orders (PENDING);
+
+|System|
+:Order visible to Workers;
+
+|Worker|
+:See order in Pending list;
+:Click "Accept & Deliver";
+
+|System|
+:Update status → IN_DELIVERY;
+
+|Client|
+:Status badge changes to IN_DELIVERY (on refresh);
+
+|Worker|
+:Physically deliver food to seat;
+:Click "Mark Delivered";
+
+|System|
+:Update status → DELIVERED;
+
+|Client|
+:See status DELIVERED;
+stop
+
+@enduml
