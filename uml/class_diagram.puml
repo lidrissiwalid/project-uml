@@ -1,10 +1,10 @@
 @startuml class_diagram
-skinparam backgroundColor #0a0a0f
-skinparam classBackgroundColor #12121a
-skinparam classBorderColor #444466
-skinparam arrowColor #00ff87
-skinparam fontColor #e8e8f0
-skinparam stereotypeCBackgroundColor #1a1a26
+skinparam backgroundColor #ffffff
+skinparam classBackgroundColor #ffffff
+skinparam classBorderColor #000000
+skinparam arrowColor #000000
+skinparam fontColor #000000
+skinparam stereotypeCBackgroundColor #dddddd
 
 ' ── Models ──
 class User {

@@ -1,10 +1,13 @@
 @startuml activity_diagram
-skinparam backgroundColor #0a0a0f
-skinparam activityBackgroundColor #12121a
-skinparam activityBorderColor #444466
-skinparam activityArrowColor #00ff87
-skinparam fontColor #e8e8f0
-skinparam swimlaneBorderColor #444466
+skinparam backgroundColor #ffffff
+skinparam activityBackgroundColor #ffffff
+skinparam activityBorderColor #000000
+skinparam activityArrowColor #000000
+skinparam fontColor #000000
+skinparam swimlaneBorderColor #000000
+skinparam activityStartColor #000000
+skinparam activityEndColor #000000
+skinparam activityBarColor #000000
 
 title Order Lifecycle — Activity Diagram with Swim Lanes
 
