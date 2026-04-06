@@ -1,24 +1,37 @@
-# ── Maven build output ──
+# ═══════════════════════════════════
+# Build output
+# ═══════════════════════════════════
 target/
-*.class
-*.jar
 *.war
+*.jar
+*.class
 
-# ── IDE files ──
+# ═══════════════════════════════════
+# Database credentials — NEVER commit
+# ═══════════════════════════════════
+src/main/resources/db.properties
+
+# ═══════════════════════════════════
+# IDEs
+# ═══════════════════════════════════
 .idea/
 .vscode/
 *.iml
+*.ipr
+*.iws
 .classpath
 .project
 .settings/
 
-# ── OS files ──
+# ═══════════════════════════════════
+# OS files
+# ═══════════════════════════════════
 .DS_Store
 Thumbs.db
 
-# ── Sensitive config ──
-src/main/resources/db.properties
-
-# ── Logs ──
-*.log
-logs/
+# ═══════════════════════════════════
+# Maven wrapper (optional)
+# ═══════════════════════════════════
+.mvn/
+mvnw
+mvnw.cmd

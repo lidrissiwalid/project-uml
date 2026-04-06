@@ -1,26 +1,57 @@
-@startuml
-title Sequence — Login
+@startuml sequence_login
+skinparam backgroundColor #0a0a0f
+skinparam sequenceParticipantBackgroundColor #12121a
+skinparam sequenceParticipantBorderColor #444466
+skinparam sequenceArrowColor #00ff87
+skinparam fontColor #e8e8f0
+skinparam sequenceLifeLineBorderColor #444466
 
-actor Client
-boundary "index.html" as UI
-control AuthServlet
-entity AuthService
-database MySQL
+title Login Flow — Sequence Diagram
 
-Client -> UI : enter username + password\nclick Sign In
-UI -> AuthServlet : POST /api/auth/login\n{"username":"...","password":"..."}
-AuthServlet -> AuthService : login(username, password)
-AuthService -> MySQL : SELECT * FROM users\nWHERE username = ?
-MySQL --> AuthService : User row (with password_hash)
-AuthService -> AuthService : BCrypt.checkpw(plain, hash)
-alt valid credentials
-  AuthService --> AuthServlet : User (hash cleared)
-  AuthServlet -> AuthServlet : req.getSession().setAttribute("user", user)
-  AuthServlet --> UI : 200 OK\n{"id":1,"username":"...","role":"CLIENT"}
-  UI -> UI : store user in JS\nredirectByRole(role)
-else invalid credentials
-  AuthService --> AuthServlet : throw IllegalArgumentException
-  AuthServlet --> UI : 401 Unauthorized\n{"error":"Invalid credentials"}
-  UI -> Client : red error toast
+actor User
+participant "index.html\n(Browser)" as HTML
+participant "AuthServlet\n/api/auth" as Servlet
+participant "AuthService\n(Facade)" as Service
+participant "UserDAOImpl" as DAO
+database "MySQL" as DB
+
+== Login Request ==
+
+User -> HTML : Enter username + password\nClick "Sign In"
+HTML -> Servlet : POST /api/auth/login\n{username, password}
+activate Servlet
+
+Servlet -> Servlet : parseBody(req, Map.class)
+Servlet -> Service : login(username, plainPassword)
+activate Service
+
+Service -> DAO : findByUsername(username)
+activate DAO
+DAO -> DB : SELECT id, username, email,\npassword_hash, role\nFROM users WHERE username = ?
+DB --> DAO : ResultSet
+deactivate DAO
+DAO --> Service : Optional<User>
+
+alt User not found
+  Service --> Servlet : throws IllegalArgumentException\n"Invalid credentials"
+  Servlet --> HTML : HTTP 401\n{error: "Invalid credentials"}
+  HTML -> User : Red error toast
+else User found
+  Service -> Service : BCrypt.checkpw(plainPassword, hash)
+  alt Password mismatch
+    Service --> Servlet : throws IllegalArgumentException\n"Invalid credentials"
+    Servlet --> HTML : HTTP 401\n{error: "Invalid credentials"}
+    HTML -> User : Red error toast
+  else Password correct
+    Service -> Service : user.setPasswordHash(null)
+    Service --> Servlet : User (no hash)
+    deactivate Service
+    Servlet -> Servlet : session.setAttribute("userId", id)\nsession.setAttribute("role", role)\nsession.setMaxInactiveInterval(3600)
+    Servlet --> HTML : HTTP 200\n{id, username, email, role}
+    deactivate Servlet
+    HTML -> HTML : currentUser = data\nsessionStorage.setItem(user)
+    HTML -> User : Toast "Welcome back!"\nRedirect to role view
+  end
 end
+
 @enduml

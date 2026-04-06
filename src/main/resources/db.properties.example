@@ -1,7 +1,0 @@
-# Database configuration template
-# Copy this file to db.properties and fill in your values.
-# DO NOT commit db.properties — it is in .gitignore.
-
-db.url=jdbc:mysql://localhost:3306/stadiumeats?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-db.username=root
-db.password=YOUR_PASSWORD_HERE
