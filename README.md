@@ -26,10 +26,10 @@
 
 | # | Name | Role |
 |---|------|------|
-| 1 | [Member 1 — Placeholder] | Backend / Database |
-| 2 | [Member 2 — Placeholder] | Frontend / UI |
-| 3 | [Member 3 — Placeholder] | Architecture / DevOps |
-| 4 | [Member 4 — Placeholder] | Testing / Documentation |
+| 1 | [ILIASS MOUCHRIF] | Chef de projet
+| 2 | [YOUSSEF LAARYECH] | Backend Auth |
+| 3 | [WALID LIDRISSI] | Backend Commandes|
+| 4 | [EL HOUSSAINI MOHAMED TAHA] | Frontend |
 
 ---
 
