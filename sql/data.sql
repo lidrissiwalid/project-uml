@@ -7,42 +7,48 @@ USE stadiumeats;
 --   worker123  -> hash below
 --   client123  -> hash below
 INSERT INTO users (username, email, password_hash, role) VALUES
-('admin',  'admin@stadiumeats.com',  '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'ADMIN'),
-('worker1','worker1@stadiumeats.com','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'WORKER'),
-('client1','client1@stadiumeats.com','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'CLIENT');
+('admin',  'admin@stadiumeats.com',  '$2a$10$UBfxmi686K8IR/qNAwlit.FU1EU/8PCEu9iqQeCMs.JK8ELTi34bG', 'ADMIN'),
+('worker1','worker1@stadiumeats.com','$2a$10$Bg.xGLQBAOXMxFWNjtXkqursVeCDWvXrnChs2c.SP1i6hPNU58H5G', 'WORKER'),
+('client1','client1@stadiumeats.com','$2a$10$9Gkwbe2tsxfOFQ3I1JS8V.owxQWpxxZ8jwTT8REbBZqnTSWDkidDy', 'CLIENT');
 
--- NOTE: The bcrypt hash above corresponds to the password "password123"
+-- NOTE: The bcrypt hashes above correspond to the passwords "admin123", "worker123", and "client123" respectively.
 -- To use specific passwords (admin123, worker123, client123) you should run
 -- the application and register, or generate new hashes.
 
 -- Seed menu items
 INSERT INTO menu_items (name, description, price, category, image_url, available) VALUES
-('Classic Burger',
- 'Juicy beef patty with lettuce, tomato, and our signature sauce',
- 12.99, 'Burgers',
+('Pizza',
+ 'Freshly baked pepperoni pizza slice',
+ 30.00, 'Food',
+ 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400',
+ TRUE),
+
+('Burger',
+ 'Juicy classic beef burger with fresh cheese',
+ 50.00, 'Food',
  'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400',
  TRUE),
 
-('Loaded Nachos',
- 'Crispy tortilla chips with melted cheese, jalapeños, sour cream, and salsa',
- 9.99, 'Snacks',
- 'https://images.unsplash.com/photo-1513456852971-30c0b8199d4d?w=400',
+('Tacos',
+ 'Authentic spiced beef tacos with fresh salsa',
+ 30.00, 'Food',
+ 'https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=400',
  TRUE),
 
-('Stadium Hot Dog',
- 'All-beef frankfurter in a soft bun with mustard and ketchup',
- 6.99, 'Hot Dogs',
- 'https://images.unsplash.com/photo-1619740455993-9d16a2b3cf30?w=400',
+('Tea',
+ 'Hot traditional mint tea',
+ 10.00, 'Drinks',
+ 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=400',
  TRUE),
 
-('Craft Beer (500ml)',
- 'Ice-cold premium lager, perfectly refreshing for game day',
- 7.50, 'Drinks',
- 'https://images.unsplash.com/photo-1535958636474-b021ee887b13?w=400',
+('Coffee',
+ 'Freshly brewed aromatic coffee cup',
+ 12.00, 'Drinks',
+ 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=400',
  TRUE),
 
-('Pepperoni Pizza Slice',
- 'Hand-stretched dough, tomato sauce, mozzarella and premium pepperoni',
- 8.99, 'Pizza',
- 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400',
+('Water',
+ 'Chilled mineral water bottle (500ml)',
+ 5.00, 'Drinks',
+ 'https://images.unsplash.com/photo-1523362628745-0c100150b504?w=400',
  TRUE);

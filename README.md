@@ -9,16 +9,17 @@
 
 1. [Team Members](#team-members)
 2. [Project Description](#project-description)
-3. [Prerequisites & Installation](#prerequisites--installation)
-4. [How to Run](#how-to-run)
-5. [Frontend Screens](#frontend-screens)
-6. [API Reference](#api-reference)
-7. [Architecture](#architecture)
-8. [Design Patterns](#design-patterns)
-9. [SOLID Principles](#solid-principles)
-10. [Security Measures](#security-measures)
-11. [Difficulties & Solutions](#difficulties--solutions)
-12. [Conclusion](#conclusion)
+3. [Requirements](#requirements)
+4. [Prerequisites & Installation](#prerequisites--installation)
+5. [How to Run](#how-to-run)
+6. [Frontend Screens](#frontend-screens)
+7. [API Reference](#api-reference)
+8. [Architecture](#architecture)
+9. [Design Patterns](#design-patterns)
+10. [SOLID Principles](#solid-principles)
+11. [Security Measures](#security-measures)
+12. [Difficulties & Solutions](#difficulties--solutions)
+13. [Conclusion](#conclusion)
 
 ---
 
@@ -46,6 +47,31 @@ The application is built as a **Single-Page Application (SPA)** — all navigati
 | **CLIENT** | Browse menu, add items to cart, place orders (online card payment or cash on delivery), track live order status |
 | **WORKER** | View pending orders, accept delivery (→ IN_DELIVERY), mark as delivered, auto-refreshing dashboard |
 | **ADMIN** | Full menu CRUD, view & filter all orders, change order status, view all registered users |
+
+---
+
+## Requirements
+
+### User Stories
+
+- **As a CLIENT**, I want to browse the menu and add items to a cart, so that I can conveniently place food orders from my stadium seat.
+- **As a CLIENT**, I want to track the status of my order, so that I know exactly when my food will arrive.
+- **As a WORKER**, I want a live dashboard of pending orders, so that I can efficiently deliver food straight to the client's seat.
+- **As an ADMIN**, I want to manage menu items and monitor all orders, so that I maintain complete oversight over stadium sales.
+
+### MoSCoW Prioritization
+
+- **Must Have**: Real-time order cart, Secure login system, Order assignment to seating, Three distinct role interfaces (Client, Worker, Admin).
+- **Should Have**: Online credit card form mock-up, Live worker dashboard refresh polling.
+- **Could Have**: In-depth sales analytical charts, SMS delivery tracking.
+- **Won't Have**: External third-party payment gateway integration (Stripe/PayPal), physical ticket scanning.
+
+### Acceptance Criteria
+
+- **Authentication**: Users must securely log into their accounts; passwords must be hashed using BCrypt. Unauthenticated users cannot view the menu or place orders.
+- **Ordering System**: A client must successfully be able to create an order designated for their seat. The application MUST gracefully reject empty orders or malformed requests.
+- **Worker Dashboard**: A logged-in worker must organically see newly created pending orders pop up without hard page reloads and transition their states reliably to `IN_DELIVERY` then `DELIVERED`.
+- **Admin Tools**: The application allows the admin absolute permission to modify database menu records (CRUD) and dynamically override states for any active order.
 
 ---
 
@@ -112,7 +138,45 @@ db.password=yourpassword
 
 ```bash
 cd StadiumEats
-mvn clean package
+Update the frontend of my project with the following requirements:
+
+1. MENU UPDATE:
+- Replace the current menu categories with:
+  - Burger
+  - Tacos
+  - Pizza
+  - Coke
+  - Coffee
+  - Tea
+
+- Ensure:
+  - Proper spelling and consistent naming (e.g., "Pizza" not "Pizaa", "Coke" not "Coce").
+  - Each category is displayed clearly in the navigation/menu UI.
+  - Icons or images (if used) match each category.
+  - The layout remains responsive and visually balanced.
+
+2. CURRENCY UPDATE:
+- Change the currency across the entire project to Moroccan Dirham (MAD / DH).
+- Apply this globally:
+  - Product prices
+  - Cart
+  - Checkout
+  - Invoices / summaries
+- Format prices like:
+  - 50 DH
+  - 120 MAD (choose one format and keep it consistent)
+
+3. CONSISTENCY:
+- Ensure all components (frontend + backend if needed) use the same currency.
+- Update any hardcoded values or formatting functions.
+- Avoid mixing currencies.
+
+4. QUALITY:
+- Do not break existing functionality.
+- Keep clean, maintainable code.
+- Follow best UI/UX practices.
+
+Return the updated code with clear explanations of what was changed.
 # Output: target/stadiumeats.war
 ```
 

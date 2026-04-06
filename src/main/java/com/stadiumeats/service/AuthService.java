@@ -83,4 +83,21 @@ public class AuthService {
         user.setPasswordHash(null);
         return user;
     }
+
+    /**
+     * Updates an existing user's role.
+     * @throws IllegalArgumentException on missing user or invalid role
+     */
+    public void updateRole(Long id, String role) throws SQLException {
+        Optional<User> opt = userDAO.findById(id);
+        if (opt.isEmpty()) {
+            throw new IllegalArgumentException("User not found");
+        }
+        User user = opt.get();
+        if (!"CLIENT".equals(role) && !"WORKER".equals(role) && !"ADMIN".equals(role)) {
+            throw new IllegalArgumentException("Invalid role");
+        }
+        user.setRole(role);
+        userDAO.update(user);
+    }
 }

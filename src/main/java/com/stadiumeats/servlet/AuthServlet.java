@@ -55,6 +55,31 @@ public class AuthServlet extends BaseApiServlet {
         }
     }
 
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String path = req.getPathInfo();
+        if (path != null && path.matches("^/users/\\d+/role$")) {
+            if (requireRole(req, resp, "ADMIN")) return;
+            try {
+                String idStr = path.split("/")[2];
+                Long id = Long.parseLong(idStr);
+                @SuppressWarnings("unchecked")
+                Map<String, String> body = parseBody(req, Map.class);
+                String newRole = body.get("role");
+                authService.updateRole(id, newRole);
+                ok(resp, Map.of("message", "Role updated successfully"));
+            } catch (NumberFormatException e) {
+                badRequest(resp, "Invalid user ID");
+            } catch (IllegalArgumentException e) {
+                badRequest(resp, e.getMessage());
+            } catch (SQLException e) {
+                serverError(resp, "Database error");
+            }
+        } else {
+            notFound(resp, "Unknown PUT endpoint: " + path);
+        }
+    }
+
     private void handleLogin(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         @SuppressWarnings("unchecked")
         Map<String, String> body = parseBody(req, Map.class);
